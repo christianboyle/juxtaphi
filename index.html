@@ -4,12 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>juxtaΦ — William James vs. Stoicism</title>
+<meta name="color-scheme" content="dark light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<script>
+  // Theme bootstrap: prefer saved choice, else system, else dark.
+  // Runs before CSS to prevent a light flash.
+  (function () {
+    const KEY = 'juxtaphi-theme';
+    const stored = (() => {
+      try {
+        return localStorage.getItem(KEY);
+      } catch {
+        return null;
+      }
+    })();
+    const isValid = stored === 'dark' || stored === 'light' || stored === 'system';
+    const hasSystem = typeof window !== 'undefined'
+      && typeof window.matchMedia === 'function'
+      && (window.matchMedia('(prefers-color-scheme: dark)').matches
+        || window.matchMedia('(prefers-color-scheme: light)').matches);
+    const theme = isValid ? stored : (hasSystem ? 'system' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <style>
-  /* ── LIGHT THEME (default vars) ── */
+  /* ── DARK THEME (default vars to avoid light flash) ── */
   :root {
+    --bg:          oklch(0.11 0.012 55);
+    --bg-subtle:   oklch(0.145 0.012 55);
+    --ink:         oklch(0.93 0.008 72);
+    --ink-mid:     oklch(0.60 0.008 68);
+    --ink-light:   oklch(0.38 0.008 65);
+    --rule:        oklch(0.21 0.010 55);
+    --james:       oklch(0.68 0.14 55);
+    --james-bg:    oklch(0.17 0.04 55);
+    --james-rule:  oklch(0.25 0.07 55);
+    --stoic:       oklch(0.60 0.12 240);
+    --stoic-bg:    oklch(0.15 0.03 240);
+    --stoic-rule:  oklch(0.23 0.06 240);
+    --overlap:     oklch(0.60 0.09 155);
+    --overlap-bg:  oklch(0.15 0.025 155);
+    --toggle-bg:   oklch(0.19 0.010 55);
+    --toggle-active: oklch(0.27 0.012 55);
+    --toggle-ink:  oklch(0.60 0.008 68);
+    --body-font-size: 15px;
+    --body-line-height: 1.6;
+    --content-width: 1240px;
+  }
+
+  /* ── LIGHT THEME ── */
+  [data-theme="light"] {
     --bg:          oklch(0.975 0.006 80);
     --bg-subtle:   oklch(0.960 0.008 75);
     --ink:         oklch(0.12 0.01 60);
@@ -27,12 +73,9 @@
     --toggle-bg:   oklch(0.90 0.008 70);
     --toggle-active: oklch(0.975 0.006 80);
     --toggle-ink:  oklch(0.42 0.01 60);
-    --body-font-size: 15px;
-    --body-line-height: 1.6;
-    --content-width: 1240px;
   }
 
-  /* ── DARK THEME ── */
+  /* ── DARK THEME (explicit selector kept for clarity) ── */
   [data-theme="dark"] {
     --bg:          oklch(0.11 0.012 55);
     --bg-subtle:   oklch(0.145 0.012 55);
@@ -897,11 +940,7 @@
 <header class="site-header">
   <div class="wordmark"><span>juxta</span><span class="phi">Φ</span></div>
   <div class="site-header-right">
-    <div class="site-header-meta">
-      Comparison No. 001<br>
-      William James vs. Stoicism<br>
-      Seven Domains of Life
-    </div>
+    <div class="site-header-meta" id="issue-header-meta"></div>
   </div>
 </header>
 
@@ -917,408 +956,31 @@
       <circle cx="7" cy="14" r="2" fill="var(--bg)" stroke="currentColor" stroke-width="1.5"/>
     </svg>
   </button>
-  <p class="intro-label">The premise</p>
-  <h2>Two philosophies. One life. Which one fits yours?</h2>
-  <p>William James built a philosophy for a changing, uncertain world — one that trusts your experience and lets you choose beliefs that work. The Stoics built theirs for an indifferent cosmos — one that demands you master yourself above all else. Both have something real to offer. Neither has everything.</p>
+  <p class="intro-label" id="issue-intro-label"></p>
+  <h2 id="issue-intro-headline"></h2>
+  <p id="issue-intro-body"></p>
 </section>
 
-<div class="scroll-hint">↓ Scroll to compare</div>
+<div class="scroll-hint" id="issue-scroll-hint"></div>
 
 <!-- COMPARISON -->
 <div class="comparison-wrap">
 
-  <div class="phil-header">
-    <div class="phil-col-header james">
-      <div class="phil-col-tag james">Pragmatism</div>
-      <div class="phil-col-name">William James</div>
-      <div class="phil-col-dates">American philosopher · 1842–1910</div>
-    </div>
-    <div class="phil-col-header stoic">
-      <div class="phil-col-tag stoic">Stoicism</div>
-      <div class="phil-col-name">The Stoics</div>
-      <div class="phil-col-dates">Epictetus · Marcus Aurelius · Seneca</div>
-    </div>
-  </div>
-
-  <!-- I. Handling Failure -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">I.</span>
-      <span class="category-name">Handling Failure</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Failure is data. Change the hypothesis and try again."</div>
-        <div class="stance-body">James's pragmatism says truth is whatever <em>works</em>. A failure simply reveals that a belief or method hasn't worked yet — not that you are broken. You are free to revise, experiment, and believe differently. <cite>"Act as if what you do makes a difference. It does."</cite><sup class="src-ref" data-src="wj_will">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Highly adaptive. Encourages resilience through experimentation rather than shame.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can become rationalisation — endlessly reframing failure without honest accountability.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Failure is only failure if you let it affect your character."</div>
-        <div class="stance-body">Stoics distinguish outcomes (external, not fully yours) from intention and effort (internal, fully yours). Failure at a goal is irrelevant to virtue. What matters is whether you acted with reason and integrity. <cite>"You have power over your mind — not outside events."</cite> — Marcus Aurelius<sup class="src-ref" data-src="ma_meditations">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Provides emotional stability. Separates self-worth from outcomes decisively.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">May reduce urgency to improve — too easy to call any outcome "external."</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- II. Daily Habits -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">II.</span>
-      <span class="category-name">Daily Habits</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Habit is the flywheel of society — and of the self."</div>
-        <div class="stance-body">James wrote extensively on habit, arguing that character is built through repeated action, not intention. The nervous system is plastic — every day of practice literally changes who you are. But habits must feel useful, or they won't stick.<sup class="src-ref" data-src="wj_psychology">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Grounded in psychology. Practical guidance on building and breaking patterns.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Doesn't tell you <em>which</em> habits to build — leaves values open-ended.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Each morning, rehearse reason. Each evening, examine yourself."</div>
-        <div class="stance-body">Stoics had a complete daily practice: morning premeditation of adversity (<em>premeditatio malorum</em>), journaling, evening reflection. Marcus Aurelius filled his private journal with this. Discipline is the form that virtue takes in time.<sup class="src-ref" data-src="ma_meditations">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Concrete, structured rituals. Combines self-reflection with philosophical grounding.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can feel rigid or austere — difficult to sustain for pleasure-oriented personalities.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- III. Meaning & Purpose -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">III.</span>
-      <span class="category-name">Meaning & Purpose</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Meaning is not found. It is made — and it must work for you."</div>
-        <div class="stance-body">For James, meaning is personal and verified by its fruits. If a belief gives your life energy, direction, and satisfaction — it is, in a meaningful sense, true. He defends the right to believe even without complete evidence, so long as the belief bears good results.<sup class="src-ref" data-src="wj_will">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Empowering and flexible. Respects individual difference in what counts as meaningful.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Risks solipsism — meaning that "works" for you may not survive contact with others' reality.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Purpose is given by nature: live according to reason, serve the whole."</div>
-        <div class="stance-body">Stoics believed in a rational order (<em>logos</em>) running through the universe. Human purpose is to align with that order — to reason well, act virtuously, and contribute to the common good. Meaning isn't constructed; it is recognised.<sup class="src-ref" data-src="epictetus_discourses">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Stable and universal. Anchors meaning outside mood or circumstance.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">The cosmic framework (logos) requires a leap of faith modern people may not share.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- IV. Death & Impermanence -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">IV.</span>
-      <span class="category-name">Death & Impermanence</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"We have the right to believe in continuity — if that belief helps us live."</div>
-        <div class="stance-body">James was open to religious and spiritual interpretations of death, including survival of consciousness. He didn't demand certainty either way. What mattered was whether a belief about death allowed a person to live with courage, hope, and full engagement.<sup class="src-ref" data-src="wj_varieties">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Compassionate and open. Doesn't demand atheism or forced acceptance.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">May avoid difficult truths — comforting belief and honest belief are not always the same.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Memento mori — remember you will die. Let it sharpen every hour."</div>
-        <div class="stance-body">Stoics meditated on death daily, not to be morbid, but to dissolve attachment and intensify presence. <cite>"Think of yourself as dead. You have lived your life. Now take what's left and live it properly."</cite> — Marcus Aurelius.<sup class="src-ref" data-src="ma_meditations">↗</sup> Death is not the enemy of life; forgetting it is.</div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Clarifying and urgency-inducing. Reduces fear by making death familiar.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can feel nihilistic or emotionally cold to those processing grief.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- V. Ambition & Success -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">V.</span>
-      <span class="category-name">Ambition & Success</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Believe in your success, and the belief itself becomes causal."</div>
-        <div class="stance-body">James understood that expectation and confidence change what is possible. His "Will to Believe" argues that in situations where the evidence is genuinely undecided, choosing to believe you can succeed often tips the scales. Ambition is not vanity — it is a hypothesis about the world.<sup class="src-ref" data-src="wj_pragmatism">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Energising. Legitimises ambition and self-belief as philosophically sound.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Positive thinking taken too far collapses into magical thinking and ignores structural barriers.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Pursue excellence, not outcomes. The rest is not yours to own."</div>
-        <div class="stance-body">Stoicism distinguishes <em>preferred indifferents</em> — things like wealth and status that are acceptable to pursue — from virtue, which is the only true good. Ambition is fine, so long as you are not emotionally attached to its results. <cite>"Seek not that the things which happen should happen as you wish."</cite> — Epictetus<sup class="src-ref" data-src="epictetus_enchiridion">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Prevents ego-collapse on failure. Sustainable effort without emotional overinvestment.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can dampen drive — if outcomes don't matter, why compete hard?</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- VI. Relationships -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">VI.</span>
-      <span class="category-name">Relationships</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Each person is a unique stream of experience. Meet them there."</div>
-        <div class="stance-body">James's radical empiricism insists that relations between things are as real as the things themselves. Connection, sympathy, and shared experience are not secondary — they are the substance of life. People are not obstacles to your inner life; they <em>are</em> part of it.<sup class="src-ref" data-src="wj_pragmatism">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Warm and relational. Philosophy of connection rather than self-perfection.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Less guidance on conflict, difficult relationships, or when to walk away.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Love people, but hold them with an open hand."</div>
-        <div class="stance-body">Stoics cultivated deep affection — especially Marcus Aurelius, who wrote tenderly of his mentors. But they held relationships without clinging, knowing all bonds are temporary. Epictetus advised reminding yourself at dinner that you love "mortals" — not as coldness, but as a practice of presence.<sup class="src-ref" data-src="epictetus_enchiridion">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Reduces codependency and possessiveness. Love without ownership.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can create emotional distance — partners may feel they are being processed, not loved.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- VII. Emotions -->
-  <div class="category">
-    <div class="category-label-row">
-      <span class="roman">VII.</span>
-      <span class="category-name">Emotions</span>
-      <div class="category-rule"></div>
-    </div>
-    <div class="category-cols">
-      <div class="stance james">
-        <div class="stance-claim">"Emotion is not the enemy of reason — it is essential information."</div>
-        <div class="stance-body">James proposed that emotion follows action, not the other way around (<em>the James-Lange theory<sup class="src-ref" data-src="james_lange">↗</sup></em>). We don't cry because we're sad — we're sad because we cry. This means we can influence our emotional states by changing our behaviour. Emotions are real, valid, and useful data.</div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Validates emotional life. Offers practical leverage — act differently to feel differently.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">May not account for deep-seated emotions that behaviour alone cannot resolve.</span></div>
-        </div>
-      </div>
-      <div class="stance stoic">
-        <div class="stance-claim">"Emotion is a judgment. Change the judgment, change the feeling."</div>
-        <div class="stance-body">Stoics believe that <em>passions</em> (destructive emotions like rage, anxiety, envy) arise from false judgments about what is good or bad. Challenge the judgment — "this traffic is not actually evil" — and the passion loses its grip. Equanimity (<em>apatheia</em>) is not numbness; it is clear perception.<sup class="src-ref" data-src="epictetus_discourses">↗</sup></div>
-        <div class="tags">
-          <div class="tag strength"><span class="tag-label">Strength</span><span class="tag-text">Highly effective for anxiety and anger. Cognitive therapy shares this exact model.</span></div>
-          <div class="tag weakness"><span class="tag-label">Weakness</span><span class="tag-text">Can lead to suppression when intellectualising replaces actually feeling.</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div class="phil-header" id="issue-phil-header"></div>
+  <div id="issue-comparison-categories"></div>
 </div>
 
 <!-- QUIZ SECTION -->
 <div class="quiz-section">
   <div class="quiz-header">
-    <span class="quiz-eyebrow">Quiz</span>
-    <span class="quiz-title">Which suits you?</span>
-    <span class="quiz-subtitle">Seven scenarios. No wrong answers.</span>
+    <span class="quiz-eyebrow" id="issue-quiz-eyebrow"></span>
+    <span class="quiz-title" id="issue-quiz-title"></span>
+    <span class="quiz-subtitle" id="issue-quiz-subtitle"></span>
   </div>
   <div class="quiz-body">
-    <p class="quiz-intro">Read each scenario and choose the response that feels most natural to you — not the one you think you <em>should</em> pick. Your result reflects a tendency, not a verdict.</p>
+    <p class="quiz-intro" id="issue-quiz-intro"></p>
 
-    <div class="quiz-questions">
-
-      <!-- Q1 -->
-      <div class="quiz-q" data-q="1">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">I.</span>
-          <span class="quiz-q-topic">Failure</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">You've just failed something important — a job application, a relationship, a goal you worked toward for months. What's your first instinct?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q1" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Figure out what went wrong, adjust the approach, and try again differently. The failure taught you something — use it.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q1" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Remind yourself that the outcome was never fully in your control. Your effort and character were — examine those, not the result.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q2 -->
-      <div class="quiz-q" data-q="2">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">II.</span>
-          <span class="quiz-q-topic">Daily Habits</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">You want to build a better morning routine. Which approach appeals more?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q2" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Experiment until you find what actually makes you feel energised — try things, keep what works, drop what doesn't.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q2" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Set a fixed, intentional routine and stick to it — journal, reflect, set your intentions. Discipline is the point.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q3 -->
-      <div class="quiz-q" data-q="3">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">III.</span>
-          <span class="quiz-q-topic">Meaning</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">A friend asks you: "How do you decide what to do with your life?" What do you say?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q3" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You try things and see what gives you energy and meaning. What works for you is what's true for you — your purpose is yours to define.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q3" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You look for what you're genuinely suited to do well and where you can serve others. Purpose is less about preference and more about duty and virtue.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q4 -->
-      <div class="quiz-q" data-q="4">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">IV.</span>
-          <span class="quiz-q-topic">Death</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">You find yourself thinking about your own mortality. What do you do with that feeling?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q4" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You allow yourself to believe in something beyond — or at least stay open to it. Life is richer if death isn't necessarily the end.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q4" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You sit with the fact of it. Death is natural and certain — thinking about it clearly is what makes you use your time well.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q5 -->
-      <div class="quiz-q" data-q="5">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">V.</span>
-          <span class="quiz-q-topic">Ambition</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">You're about to go for something big — a promotion, a business, a creative project. What's your relationship with the outcome?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q5" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You believe in it fully — your confidence is part of what makes it possible. Believing you'll succeed isn't naive, it's strategic.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q5" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">You focus entirely on the quality of your effort and let the outcome land where it will. Attachment to results is a trap.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q6 -->
-      <div class="quiz-q" data-q="6">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">VI.</span>
-          <span class="quiz-q-topic">Relationships</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">Someone you love is going through something hard. What does your instinct tell you to do?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q6" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Be present with them, feel what they're feeling, and find what actually helps — connection and shared experience matter most.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q6" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Be steady and clear — offer honest perspective, show up reliably, and resist getting swept up in the emotion so you can actually be useful.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q7 -->
-      <div class="quiz-q" data-q="7">
-        <div class="quiz-q-label">
-          <span class="quiz-q-num">VII.</span>
-          <span class="quiz-q-topic">Emotions</span>
-        </div>
-        <div>
-          <div class="quiz-q-scenario">You're feeling anxious about something coming up. What's your instinctive response?</div>
-          <div class="quiz-options">
-            <label class="quiz-option" data-value="james" data-badge="William James">
-              <input type="radio" name="q7" value="james">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Take action — even a small one. Moving your body, making a plan, doing something concrete shifts the feeling. Behaviour changes emotion.</span>
-              <span class="quiz-option-badge">William James</span>
-            </label>
-            <label class="quiz-option" data-value="stoic" data-badge="Stoic">
-              <input type="radio" name="q7" value="stoic">
-              <div class="quiz-option-dot"></div>
-              <span class="quiz-option-text">Examine the thought underneath the feeling. What are you telling yourself? Is that actually true? Challenge the judgment, not the symptom.</span>
-              <span class="quiz-option-badge">Stoic</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- end quiz-questions -->
+    <div class="quiz-questions" id="issue-quiz-questions"></div><!-- end quiz-questions -->
 
     <div class="quiz-submit-row">
       <button class="quiz-submit" id="quiz-submit-btn" disabled onclick="submitQuiz()">See your result</button>
@@ -1337,7 +999,7 @@
         <span id="score-label-stoic">Stoicism</span>
       </div>
       <div class="quiz-result-body" id="result-body" style="margin-top:20px;"></div>
-      <button class="quiz-retry" onclick="resetQuiz()">Retake quiz</button>
+      <button class="quiz-retry" id="quiz-retry-btn" onclick="resetQuiz()">Retake quiz</button>
     </div>
 
   </div><!-- end quiz-body -->
@@ -1346,266 +1008,24 @@
 <!-- OVERLAP SECTION -->
 <div class="overlap-section">
   <div class="overlap-header">
-    <span class="overlap-eyebrow">Synthesis</span>
-    <span class="overlap-title">Where they agree</span>
-    <span class="overlap-subtitle">Use both. They are not rivals.</span>
+    <span class="overlap-eyebrow" id="issue-synth-eyebrow"></span>
+    <span class="overlap-title" id="issue-synth-title"></span>
+    <span class="overlap-subtitle" id="issue-synth-subtitle"></span>
   </div>
-  <div class="overlap-cards">
-    <div class="overlap-card">
-      <span class="overlap-card-num">I.</span>
-      <div class="overlap-card-title">Action precedes clarity</div>
-      <div class="overlap-card-body">Both philosophies reject waiting for the perfect conditions to act. James says act on partial evidence — belief follows courage. The Stoics say act according to reason, now, regardless of outcome. Together: <em>begin before you are ready.</em></div>
-    </div>
-    <div class="overlap-card">
-      <span class="overlap-card-num">II.</span>
-      <div class="overlap-card-title">The body of practice matters</div>
-      <div class="overlap-card-body">James insisted habits shape character; Stoics built entire daily rituals of self-examination. Both demand that philosophy be <em>lived</em>, not merely read. Treat your morning routine as a philosophical act — either school would approve.</div>
-    </div>
-    <div class="overlap-card">
-      <span class="overlap-card-num">III.</span>
-      <div class="overlap-card-title">Self is not fixed</div>
-      <div class="overlap-card-body">Pragmatism sees the self as a stream, always in flow. Stoicism sees character as something actively cultivated. Neither believes you are stuck. You are, in both traditions, always in the process of becoming — which is deeply hopeful.</div>
-    </div>
-    <div class="overlap-card">
-      <span class="overlap-card-num">IV.</span>
-      <div class="overlap-card-title">A practical combination</div>
-      <div class="overlap-card-body">Use <strong>Stoicism</strong> for your internal life — managing fear, anger, and attachment. Use <strong>James</strong> for your external life — choosing beliefs that energise, relationships that nourish, and experiments worth running. Neither school need be abandoned for the other.</div>
-    </div>
-  </div>
+  <div class="overlap-cards" id="issue-synth-cards"></div>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-wordmark"><span>juxta</span><span class="phi">Φ</span></div>
-  <div class="footer-note">No. 001 — William James vs. Stoicism</div>
+  <div class="footer-note" id="issue-footer-note"></div>
 </footer>
 
 <script>
-  // ── THEME (managed by tweaks panel) ──
   function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('juxtaphi-theme', theme);
   }
-  (function() {
-    setTheme(localStorage.getItem('juxtaphi-theme') || 'dark');
-  })();
-
-  // ── TWEAKS BRIDGE ──
-  function openTweaks() {
-    window.__tweaksOpen && window.__tweaksOpen();
-  }
-
-  // ── QUIZ ──
-  const answers = {};
-  const total = 7;
-
-  function updateProgress() {
-    const count = Object.keys(answers).length;
-    document.getElementById('quiz-progress').textContent = `${count} of ${total} answered`;
-    document.getElementById('quiz-submit-btn').disabled = count < total;
-  }
-
-  document.querySelectorAll('.quiz-option').forEach(option => {
-    option.addEventListener('click', function() {
-      const radio = this.querySelector('input[type="radio"]');
-      const name = radio.name;
-      const value = this.dataset.value;
-      radio.checked = true;
-      answers[name] = value;
-
-      // Clear siblings
-      document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-        const lbl = r.closest('.quiz-option');
-        lbl.classList.remove('selected-james', 'selected-stoic');
-      });
-
-      // Mark selected
-      this.classList.add(`selected-${value}`);
-      updateProgress();
-    });
-  });
-
-  function submitQuiz() {
-    let jamesCount = 0, stoicCount = 0;
-    Object.values(answers).forEach(v => {
-      if (v === 'james') jamesCount++;
-      else stoicCount++;
-    });
-
-    const jamesPct = Math.round((jamesCount / total) * 100);
-    const stoicPct = 100 - jamesPct;
-
-    const resultEl = document.getElementById('quiz-result');
-    const titleEl = document.getElementById('result-title');
-    const bodyEl = document.getElementById('result-body');
-    const barJames = document.getElementById('score-bar-james');
-    const barStoic = document.getElementById('score-bar-stoic');
-    document.getElementById('score-label-james').textContent = `William James — ${jamesPct}%`;
-    document.getElementById('score-label-stoic').textContent = `${stoicPct}% — Stoicism`;
-
-    barJames.style.width = '0%';
-    barStoic.style.width = '0%';
-
-    resultEl.classList.add('visible');
-    resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    setTimeout(() => {
-      barJames.style.width = jamesPct + '%';
-      barStoic.style.width = stoicPct + '%';
-    }, 100);
-
-    if (jamesCount === stoicCount) {
-      titleEl.className = 'quiz-result-title tied';
-      titleEl.textContent = 'A genuine hybrid.';
-      bodyEl.textContent = `Your responses split evenly between both schools — which suggests you're already drawing on both without realising it. This is probably the most philosophically honest position. Use Stoicism when you need steadiness and emotional clarity; lean on James when you're making decisions and building a life. The synthesis section below was written for you.`;
-    } else if (jamesCount > stoicCount) {
-      titleEl.className = 'quiz-result-title james';
-      titleEl.textContent = 'You lean toward William James.';
-      bodyEl.textContent = `${jamesPct}% of your instincts align with pragmatism — with trusting experience, choosing beliefs that work, and seeing the self as flexible and open-ended. James would say your approach is already philosophically sound: the test of any idea is what it does in your life. Read The Will to Believe and Pragmatism. But borrow the Stoics' emotional toolkit — their clarity on what you can and can't control is something James left underspecified.`;
-    } else {
-      titleEl.className = 'quiz-result-title stoic';
-      titleEl.textContent = 'You lean toward Stoicism.';
-      bodyEl.textContent = `${stoicPct}% of your instincts align with the Stoic tradition — with discipline, inner mastery, and detachment from outcomes. You likely have strong self-control and handle adversity with more steadiness than most. Read Meditations by Marcus Aurelius and The Discourses of Epictetus. But borrow James's warmth — his philosophy of connection, belief, and experiment can loosen what Stoicism sometimes makes too rigid.`;
-    }
-  }
-
-  function resetQuiz() {
-    Object.keys(answers).forEach(k => delete answers[k]);
-    document.querySelectorAll('.quiz-option').forEach(o => {
-      o.classList.remove('selected-james', 'selected-stoic');
-      o.querySelector('input').checked = false;
-    });
-    document.getElementById('quiz-result').classList.remove('visible');
-    updateProgress();
-  }
-
-  updateProgress();
-
-
-  
-  const SOURCES = {
-    wj_pragmatism: {
-      author: "William James",
-      title: "Pragmatism: A New Name for Some Old Ways of Thinking",
-      year: "1907",
-      publisher: "Longmans, Green and Co.",
-      note: "James's central text on the pragmatic method — truth is what 'works' in experience."
-    },
-    wj_will: {
-      author: "William James",
-      title: "The Will to Believe",
-      year: "1897",
-      publisher: "Longmans, Green and Co.",
-      note: "Defends the right to hold beliefs that exceed the available evidence, when the stakes are live and forced."
-    },
-    wj_psychology: {
-      author: "William James",
-      title: "The Principles of Psychology",
-      year: "1890",
-      publisher: "Henry Holt and Co.",
-      note: "Foundational work in psychology. Chapter IV, 'Habit', argues the nervous system is plastic and character is built through repeated action."
-    },
-    wj_varieties: {
-      author: "William James",
-      title: "The Varieties of Religious Experience",
-      year: "1902",
-      publisher: "Longmans, Green and Co.",
-      note: "James's investigation into religious and mystical experience — he remains agnostic but sympathetic to belief in continuity beyond death."
-    },
-    ma_meditations: {
-      author: "Marcus Aurelius",
-      title: "Meditations",
-      year: "c. 170–180 AD",
-      publisher: "Written privately; first published 1558",
-      note: "Private journal of the Roman Emperor, never intended for publication. A central Stoic text on virtue, discipline, and impermanence."
-    },
-    epictetus_enchiridion: {
-      author: "Epictetus",
-      title: "Enchiridion",
-      year: "c. 125 AD",
-      publisher: "Compiled by Arrian from Epictetus's lectures",
-      note: "A short manual of Stoic ethical advice. Opens with the foundational Stoic distinction between what is 'up to us' and what is not."
-    },
-    epictetus_discourses: {
-      author: "Epictetus",
-      title: "Discourses",
-      year: "c. 108 AD",
-      publisher: "Compiled by Arrian of Nicomedia",
-      note: "Extended records of Epictetus's philosophical teaching. Covers the dichotomy of control, emotion as judgment, and social duty."
-    },
-    seneca_letters: {
-      author: "Seneca",
-      title: "Epistulae Morales ad Lucilium (Letters from a Stoic)",
-      year: "c. 65 AD",
-      publisher: "Written to Lucilius Junior",
-      note: "124 letters on Stoic practice and philosophy. Remarkably personal and direct — among the most readable Stoic texts."
-    },
-    james_lange: {
-      author: "William James",
-      title: "What is an Emotion?",
-      year: "1884",
-      publisher: "Mind, Vol. 9",
-      note: "James's original paper proposing that physiological changes precede and cause the subjective experience of emotion — later known as the James-Lange theory."
-    }
-  };
-
-
-  let _srcOpen = false;
-
-  function openSource(key, refEl) {
-    const s = SOURCES[key];
-    if (!s) return;
-    const mobile = window.innerWidth <= 720;
-
-    // Populate
-    ['author','title','year','note'].forEach(f => {
-      document.getElementById('sp-' + f).textContent = s[f] || '';
-      document.getElementById('ss-' + f).textContent = s[f] || '';
-    });
-
-    if (mobile) {
-      document.getElementById('src-overlay').classList.add('visible');
-      setTimeout(() => document.getElementById('src-sheet').classList.add('visible'), 10);
-    } else {
-      const pop = document.getElementById('src-popover');
-      pop.classList.add('visible');
-      // Position near the ref
-      const rect = refEl.getBoundingClientRect();
-      const pw = 280, ph = 180;
-      let left = rect.right + 12;
-      let top = rect.top - 20;
-      if (left + pw > window.innerWidth - 16) left = rect.left - pw - 12;
-      if (top + ph > window.innerHeight - 16) top = window.innerHeight - ph - 16;
-      if (top < 8) top = 8;
-      pop.style.left = left + 'px';
-      pop.style.top = top + 'px';
-    }
-    _srcOpen = true;
-  }
-
-  function closeSource() {
-    document.getElementById('src-popover').classList.remove('visible');
-    document.getElementById('src-overlay').classList.remove('visible');
-    document.getElementById('src-sheet').classList.remove('visible');
-    _srcOpen = false;
-  }
-
-  document.addEventListener('click', function(e) {
-    const ref = e.target.closest('.src-ref');
-    if (ref) {
-      e.stopPropagation();
-      const key = ref.dataset.src;
-      if (_srcOpen) { closeSource(); setTimeout(() => openSource(key, ref), 150); }
-      else { openSource(key, ref); }
-      return;
-    }
-    if (_srcOpen && !e.target.closest('.src-popover') && !e.target.closest('.src-sheet')) {
-      closeSource();
-    }
-  });
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSource(); });
-
 </script>
 
 
@@ -1633,10 +1053,12 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="content/issue-001.js"></script>
+<script src="framework/issue-runtime.js"></script>
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "theme": "light",
+  "theme": "system",
   "fontSize": 17,
   "lineHeight": 1.6,
   "showCitations": true,
