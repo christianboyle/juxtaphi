@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <style>
+      .bg { fill: #0f0f10; }
+      .phi { fill: #d47b3c; font-family: "DM Serif Display", Georgia, "Times New Roman", serif; font-style: italic; font-weight: 400; }
+    </style>
+  </defs>
+  <rect class="bg" width="128" height="128" rx="28" ry="28"/>
+  <text class="phi" x="64" y="86" font-size="92" text-anchor="middle">¦</text>
+</svg>
+
